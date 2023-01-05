@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -23,9 +22,11 @@ class SqlLitClass {
   }
 
   _dbCreate(Database db, int version) async {
-    await db.execute('''
+    Batch batch = db.batch();
+    batch.execute('''
     CREATE TABLE "nots" ("id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, "title" TEXT, "not" TEXT)
 ''');
+    await batch.commit();
     print("Created ==================");
   }
 
@@ -54,4 +55,28 @@ class SqlLitClass {
   }
 
   _dbUpgrade(Database db, int oldVersion, int newVersion) {}
+
+  read(String table) async {
+    Database? myDb = db;
+    List<Map> respons = await myDb!.query(table);
+    return respons;
+  }
+
+  insert(String table, Map<String, Object?> values) async {
+    Database? myDb = db;
+    int respons = await myDb!.insert(table, values);
+    return respons;
+  }
+
+  update(String table, Map<String, Object?> values) async {
+    Database? myDb = db;
+    int respons = await myDb!.update(table, values);
+    return respons;
+  }
+
+  delete(String table) async {
+    Database? myDb = db;
+    int respons = await myDb!.delete(table);
+    return respons;
+  }
 }
